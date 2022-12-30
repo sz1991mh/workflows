@@ -6,16 +6,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '14'
-      - run: npm install -g bats
-      - run: bats -v
-      
       - uses: actions/setup-go@v3.5.0
         with:
           go-version: '1.19'
       - run: go version
+
   issue-ssl-certificate:
     name: Issue SSL certificate
     runs-on: ubuntu-latest
@@ -40,4 +35,32 @@ jobs:
           output-pfx: '' 
           output-pfx-password: ''
 
-          # uninstall: true # Uninstall acme.sh after this action by default
+          uninstall: false
+      
+      - run: find ~/.acme.sh/$ACME_SH_FIRST_DOMAIN
+        shell: bash
+      
+      - name: Deploy
+        uses: alinz/ssh-scp-action@master
+        env:
+          HELLO: cool
+          MESSAGE: hello world
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          host: cc-vps-1.serenitytune.tk
+          port: 22
+          user: root
+
+          ssh_before: |
+            hostname
+            date
+            ls -lath
+
+          scp: |
+            $GITHUB_ENV root@cc-vps-1.serenitytune.tk:/etc/v2ray
+
+          # then run these commands
+          ssh_after: |
+            hostname
+            date
+            ls -lath
