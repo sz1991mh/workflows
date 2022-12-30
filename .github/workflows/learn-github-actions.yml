@@ -2,7 +2,7 @@ name: learn-github-actions
 run-name: ${{ github.actor }} is learning GitHub Actions
 on: [push]
 jobs:
-  check-bats-version:
+  check-go-version:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -38,11 +38,7 @@ jobs:
           uninstall: false
       
       - run: |
-          find ~/.acme.sh/$ACME_SH_FIRST_DOMAIN
-          pwd
-          echo $GITHUB_WORKSPACE
-          find $GITHUB_WORKSPACE
-          env
+          ~/.acme.sh/acme.sh --install-cert -d "$ACME_SH_FIRST_DOMAIN" --fullchain-file "$GITHUB_WORKSPACE/fullchain.pem" --key-file "$GITHUB_WORKSPACE/key.pem"
 
         shell: bash
       
@@ -60,13 +56,14 @@ jobs:
           ssh_before: |
             hostname
             date
-            ls -lath
+            ls -lath /etc/v2ray
 
           scp: |
-            $GITHUB_ENV root@cc-vps-1.serenitytune.tk:/etc/v2ray
+            $GITHUB_WORKSPACE/key.pem       root@cc-vps-1.serenitytune.tk:/etc/v2ray
+            $GITHUB_WORKSPACE/fullchain.pem root@cc-vps-1.serenitytune.tk:/etc/v2ray
 
           # then run these commands
           ssh_after: |
             hostname
             date
-            ls -lath
+            ls -lath /etc/v2ray
