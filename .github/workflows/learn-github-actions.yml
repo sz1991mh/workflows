@@ -32,7 +32,7 @@ jobs:
           domains-file: ''
           append-wildcard: false
 
-          arguments: --challenge-alias whisperwind.cf --dns dns_he
+          arguments: --keylength ec-256 --challenge-alias whisperwind.cf --dns dns_he
           arguments-file: ''
 
           output-fullchain: '' 
