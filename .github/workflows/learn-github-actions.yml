@@ -37,7 +37,13 @@ jobs:
 
           uninstall: false
       
-      - run: find ~/.acme.sh/$ACME_SH_FIRST_DOMAIN
+      - run: |
+          find ~/.acme.sh/$ACME_SH_FIRST_DOMAIN
+          pwd
+          echo $GITHUB_WORKSPACE
+          find $GITHUB_WORKSPACE
+          env
+
         shell: bash
       
       - name: Deploy
