@@ -60,7 +60,7 @@ jobs:
           echo "GITHUB_ENV: $GITHUB_ENV"
           cat $GITHUB_ENV
           echo "HOSTS=$SECRET_HOSTS" >> $GITHUB_ENV
-          cat $GITHUB_ENV
+          cat $GITHUB_ENV | sed 's/\./#/'
           
         shell: bash
         env:
