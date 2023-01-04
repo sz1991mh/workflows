@@ -9,7 +9,8 @@ on:
         type: environment
         required: false 
         default: staging
-        
+
+jobs:
   check-go-version:
     runs-on: ubuntu-latest
     steps:
