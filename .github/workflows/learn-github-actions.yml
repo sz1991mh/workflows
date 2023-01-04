@@ -43,7 +43,6 @@ jobs:
           echo "HOSTS: $SECRET_HOSTS"
           echo "HOSTS: $SECRET_HOSTS | sed 's/\./#/g'"
           
-        shell: bash
         env:
           SECRET_HOSTS: ${{ secrets.HOSTS }}
       
