@@ -59,6 +59,8 @@ jobs:
           echo "123 ABC XYZ"
           echo "GITHUB_ENV: $GITHUB_ENV"
           cat $GITHUB_ENV
+          echo "HOSTS=$SECRET_HOSTS" >> $GITHUB_ENV
+          cat $GITHUB_ENV
           
         shell: bash
         env:
