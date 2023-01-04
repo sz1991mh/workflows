@@ -23,43 +23,26 @@ jobs:
     name: Issue SSL certificate
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment || 'staging' }}
+    container:
+      image: neilpang/acme.sh
+      env:
+        NODE_ENV: development
+        SECRET_HOSTS: ${{ secrets.HOSTS }}
+      volumes:
+        - $GITHUB_WORKSPACE:/acme.sh
+
     steps:
-      - uses: Menci/acme@v1
-        if: ${{ false  }}
-        with:
-          version: 3.0.2
-
-          # Register your account and try issue a certificate with DNS API mode
-          # Then fill with the output of `tar cz ca account.conf | base64 -w0` running in your `~/.acme.sh`
-          account-tar: ${{ secrets.ACME_SH_ACCOUNT_TAR }}
-
-          domains: '*.serenitytune.tk *.ddns.serenitytune.tk'
-          domains-file: ''
-          append-wildcard: false
-
-          arguments: --challenge-alias whisperwind.cf --dns dns_he
-          arguments-file: ''
-
-          output-fullchain: '' 
-          output-key: '' 
-          output-pfx: '' 
-          output-pfx-password: ''
-
-          uninstall: false
-      
       - run: |
-          #~/.acme.sh/acme.sh --install-cert -d "$ACME_SH_FIRST_DOMAIN" --fullchain-file "$GITHUB_WORKSPACE/fullchain.pem" --key-file "$GITHUB_WORKSPACE/key.pem"
-          for x in 123 ABC XYZ
+          acme.sh --help
+      - run: |
+          for h in $SECRET_HOSTS
           do
-            echo "x is $x"
-            echo "::add-mask::$x"
-            echo "after mask, x is $x"
+            echo "h is $h"
+            echo "::add-mask::$h"
+            echo "after mask, h is $h"
           done
-          echo "123 ABC XYZ"
-          echo "GITHUB_ENV: $GITHUB_ENV"
-          cat $GITHUB_ENV
-          echo "HOSTS=$SECRET_HOSTS" >> $GITHUB_ENV
-          cat $GITHUB_ENV | sed 's/\./#/g'
+          echo "HOSTS: $SECRET_HOSTS"
+          echo "HOSTS: $SECRET_HOSTS | sed 's/\./#/g'"
           
         shell: bash
         env:
