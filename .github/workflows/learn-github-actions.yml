@@ -1,7 +1,15 @@
 name: learn-github-actions
 run-name: ${{ github.actor }} is learning GitHub Actions
-on: [push, workflow_dispatch]
-jobs:
+on:
+  puish
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to run against'
+        type: environment
+        required: false 
+        default: staging
+        
   check-go-version:
     runs-on: ubuntu-latest
     steps:
@@ -14,6 +22,7 @@ jobs:
   issue-ssl-certificate:
     name: Issue SSL certificate
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
     steps:
       - uses: Menci/acme@v1
         if: ${{ false  }}
