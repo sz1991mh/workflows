@@ -37,7 +37,7 @@ jobs:
           echo "$ACME_SH_ACCOUNT_TAR" | base64 -d | tar -C $LE_CONFIG_HOME -xz
           
           acme.sh --issue --keylength ec-256 -d "*.serenitytune.tk" -d "*.ddns.serenitytune.tk" --challenge-alias whisperwind.cf --dns dns_he
-          acme.sh --install-cert -d '*.serenitytune.tk' --key-file $GITHUB_WORKSPACE/key.key --fullchain-file $GITHUB_WORKSPACE/cert.crt
+          acme.sh --install-cert -ecc -d '*.serenitytune.tk' --key-file $GITHUB_WORKSPACE/key.key --fullchain-file $GITHUB_WORKSPACE/cert.crt
           
         env:
           ACME_SH_ACCOUNT_TAR: ${{ secrets.ACME_SH_ACCOUNT_TAR }}
