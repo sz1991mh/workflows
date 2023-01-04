@@ -23,7 +23,7 @@ jobs:
   issue-ssl-certificate:
     name: Issue SSL certificate
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    environment: ${{ inputs.environment }} || staging
     steps:
       - uses: Menci/acme@v1
         if: ${{ false  }}
@@ -56,35 +56,11 @@ jobs:
             echo "::add-mask::$x"
             echo "after mask, x is $x"
           done
-          echo "secrets HOSTS is $SECRET_HOSTS"
+          echo "123 ABC XYZ"
+          echo "GITHUB_ENV: $GITHUB_ENV"
+          cat $GITHUB_ENV
+          
         shell: bash
         env:
           SECRET_HOSTS: ${{ secrets.HOSTS }}
       
-      - name: Deploy
-        uses: alinz/ssh-scp-action@master
-        if: ${{ false  }}
-        env:
-          HELLO: cool
-          MESSAGE: hello world
-        with:
-          key: ${{ secrets.SSH_KEY }}
-          host: cc-vps-1.serenitytune.tk
-          port: 22
-          user: root
-
-          ssh_before: |
-            hostname
-            date
-            ls -lath /etc/v2ray
-
-          scp: |
-            #$GITHUB_WORKSPACE/key.pem          root@cc-vps-1.serenitytune.tk:/etc/v2ray
-            #$GITHUB_WORKSPACE/fullchain.pem    root@cc-vps-1.serenitytune.tk:/etc/v2ray
-            $GITHUB_WORKSPACE/GITHUB_ENV        root@cc-vps-1.serenitytune.tk:/etc/v2ray
-
-          # then run these commands
-          ssh_after: |
-            hostname
-            date
-            ls -lath /etc/v2ray
