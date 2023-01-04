@@ -22,7 +22,7 @@ jobs:
   issue-ssl-certificate:
     name: Issue SSL certificate
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment || "staging" }}
+    environment: ${{ inputs.environment || 'staging' }}
     steps:
       - uses: Menci/acme@v1
         if: ${{ false  }}
