@@ -40,12 +40,17 @@ jobs:
       
       - run: |
           #~/.acme.sh/acme.sh --install-cert -d "$ACME_SH_FIRST_DOMAIN" --fullchain-file "$GITHUB_WORKSPACE/fullchain.pem" --key-file "$GITHUB_WORKSPACE/key.pem"
-          echo ${{ secrets.HOSTS }}
-
+          for x in 123 ABC XYZ
+          do
+            echo "x is $x"
+            echo "::add-mask::$x"
+            echo "after mask, x is $x"
+          done
         shell: bash
       
       - name: Deploy
         uses: alinz/ssh-scp-action@master
+        if: ${{ false  }}
         env:
           HELLO: cool
           MESSAGE: hello world
@@ -61,8 +66,9 @@ jobs:
             ls -lath /etc/v2ray
 
           scp: |
-            $GITHUB_WORKSPACE/key.pem       root@cc-vps-1.serenitytune.tk:/etc/v2ray
-            $GITHUB_WORKSPACE/fullchain.pem root@cc-vps-1.serenitytune.tk:/etc/v2ray
+            #$GITHUB_WORKSPACE/key.pem          root@cc-vps-1.serenitytune.tk:/etc/v2ray
+            #$GITHUB_WORKSPACE/fullchain.pem    root@cc-vps-1.serenitytune.tk:/etc/v2ray
+            $GITHUB_WORKSPACE/GITHUB_ENV        root@cc-vps-1.serenitytune.tk:/etc/v2ray
 
           # then run these commands
           ssh_after: |
