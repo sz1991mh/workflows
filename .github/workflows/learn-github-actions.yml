@@ -28,12 +28,11 @@ jobs:
       env:
         NODE_ENV: development
         SECRET_HOSTS: ${{ secrets.HOSTS }}
-      volumes:
-        - $GITHUB_WORKSPACE:/acme.sh
 
     steps:
       - run: |
           acme.sh --help
+          env
       - run: |
           for h in $SECRET_HOSTS
           do
