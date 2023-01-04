@@ -33,6 +33,16 @@ jobs:
       - run: |
           acme.sh --help
           env
+          
+          echo "$ACME_SH_INPUT_ACCOUNT_TAR" | base64 -d | tar -C $LE_CONFIG_HOME -xz
+          
+          acme.sh --issue --keylength ec-256 -d "*.serenitytune.tk" -d "*.ddns.serenitytune.tk" --challenge-alias whisperwind.cf --dns dns_he
+          acme.sh --install-cert -d '*.serenitytune.tk' --key-file $GITHUB_WORKSPACE/key.key --fullchain-file $GITHUB_WORKSPACE/cert.crt
+          
+        env:
+          ACME_SH_ACCOUNT_TAR: ${{ secrets.ACME_SH_ACCOUNT_TAR }}
+          ACME_SH_COMMANDS: ${{ secrets.ACME_SH_COMMANDS }}
+          
       - run: |
           for h in $SECRET_HOSTS
           do
@@ -45,4 +55,17 @@ jobs:
           
         env:
           SECRET_HOSTS: ${{ secrets.HOSTS }}
-      
+
+  deploy-ssl-certificate:
+    name: deploy SSL certificate
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment || 'staging' }}
+    container:
+      image: alpine
+      env:
+        NODE_ENV: development
+        SECRET_HOSTS: ${{ secrets.HOSTS }}
+    steps:
+      - run: |
+          echo $GITHUB_WORKSPACE
+          find $GITHUB_WORKSPACE
