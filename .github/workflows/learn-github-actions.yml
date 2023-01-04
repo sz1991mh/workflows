@@ -46,7 +46,10 @@ jobs:
             echo "::add-mask::$x"
             echo "after mask, x is $x"
           done
+          echo "secrets HOSTS is $SECRET_HOSTS"
         shell: bash
+        env:
+          SECRET_HOSTS: ${{ secrets.HOSTS }}
       
       - name: Deploy
         uses: alinz/ssh-scp-action@master
