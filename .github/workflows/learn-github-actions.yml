@@ -31,8 +31,11 @@ jobs:
 
     steps:
       - run: |
-          acme.sh --help
-          env
+          DOMAINS=$(echo $ACME_SH_ISSUE_ARGS | tr "$IFS" "\n" | sed 's/^"//g; s/"$//g' | grep -Eo "\w+\.\w+$" | sort -u)
+          for DOMAIN in $DOMAIN_MASK
+          do
+            echo "::add-mask::$DOMAIN"
+          done
           
           echo "$ACME_SH_ACCOUNT_TAR" | base64 -d | tar -C $LE_CONFIG_HOME -xz
           
