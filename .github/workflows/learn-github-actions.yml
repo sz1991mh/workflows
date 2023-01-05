@@ -40,17 +40,17 @@ jobs:
           
           echo "$ACME_SH_ACCOUNT_TAR" | base64 -d | tar -C $LE_CONFIG_HOME -xz
           
-          acme.sh --issue $ACME_SH_ISSUE_ARGS
-          acme.sh --install-cert $ACME_SH_INSTALL_ARGS --key-file $GITHUB_WORKSPACE/key.key --fullchain-file $GITHUB_WORKSPACE/cert.crt
+          acme.sh --issue $(echo $ACME_SH_COMMANDS | jq ".issue_args")
+          acme.sh --install-cert $(echo $ACME_SH_COMMANDS | jq ".install_args") --key-file $GITHUB_WORKSPACE/key.key --fullchain-file $GITHUB_WORKSPACE/cert.crt
         env:
           ACME_SH_ACCOUNT_TAR: ${{ secrets.ACME_SH_ACCOUNT_TAR }}
-          ACME_SH_ISSUE_ARGS: ${{ fromJson(secrets.ACME_SH_COMMAND_ARGS).issue_args }}
-          ACME_SH_INSTALL_ARGS: ${{ fromJson(secrets.ACME_SH_COMMAND_ARGS).install_args }}
+          ACME_SH_COMMANDS: ${{ secrets.ACME_SH_COMMANDS }}
           
       - name: inspect
         run: |
           echo "HOSTS: $SECRET_HOSTS"
           echo "HOSTS: $SECRET_HOSTS" | sed 's/\./#/g'
+          
         env:
           SECRET_HOSTS: ${{ secrets.HOSTS }}
           
