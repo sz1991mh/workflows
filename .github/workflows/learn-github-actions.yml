@@ -40,8 +40,8 @@ jobs:
           acme.sh --install-cert $ACME_SH_INSTALL_ARGS --key-file $GITHUB_WORKSPACE/key.key --fullchain-file $GITHUB_WORKSPACE/cert.crt
         env:
           ACME_SH_ACCOUNT_TAR: ${{ secrets.ACME_SH_ACCOUNT_TAR }}
-          ACME_SH_ISSUE_ARGS: ${{ fromJSON(secrets.ACME_SH_COMMAND_ARGS)['issue_args'] }}
-          ACME_SH_INSTALL_ARGS: ${{ fromJSON(secrets.ACME_SH_COMMAND_ARGS)['install_args'] }}
+          ACME_SH_ISSUE_ARGS: ${{ fromJson(secrets.ACME_SH_COMMAND_ARGS).issue_args }}
+          ACME_SH_INSTALL_ARGS: ${{ fromJson(secrets.ACME_SH_COMMAND_ARGS).install_args }}
           
       - run: |
           echo "HOSTS: $SECRET_HOSTS"
@@ -76,6 +76,3 @@ jobs:
           echo "CERT:"
           echo ${{needs.issue-cert.outputs.ACME_SH_CERT}}
           echo ${{needs.issue-cert.outputs.ACME_SH_CERT}} >$GITHUB_WORKSPACE/cert.crt
-
-
-
