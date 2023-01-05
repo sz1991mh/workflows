@@ -30,12 +30,11 @@ jobs:
         SECRET_HOSTS: ${{ secrets.HOSTS }}
 
     outputs:
-      ACME_SH_KEY: ${{ steps.acme.outputs.ACME_SH_KEY }}
-      ACME_SH_CERT: ${{ steps.acme.outputs.ACME_SH_CERT }}
+      ACME_SH_KEY: ${{ steps.output_step.outputs.ACME_SH_KEY }}
+      ACME_SH_CERT: ${{ steps.output_step.outputs.ACME_SH_CERT }}
 
     steps:
       - name: acme.sh
-        id: acme
         run: |
           DOMAINS=$(echo $ACME_SH_COMMANDS | jq -r ".issue_args" | tr "$IFS" "\n" | sed 's/^"//g; s/"$//g' | grep -Eo "\w+\.\w+$" | sort -u)
           for DOMAIN in $DOMAINS
@@ -55,6 +54,7 @@ jobs:
           ACME_SH_COMMANDS: ${{ secrets.ACME_SH_COMMANDS }}
 
       - name: output
+        id: output_step
         run: |
           echo "ACME_SH_KEY<<EOF" >> $GITHUB_OUTPUT
           cat $GITHUB_WORKSPACE/key.key >> $GITHUB_OUTPUT
