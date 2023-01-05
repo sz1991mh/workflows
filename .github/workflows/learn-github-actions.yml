@@ -32,7 +32,7 @@ jobs:
     steps:
       - name: acme.sh
         run: |
-          DOMAINS=$(echo $ACME_SH_ISSUE_ARGS | tr "$IFS" "\n" | sed 's/^"//g; s/"$//g' | grep -Eo "\w+\.\w+$" | sort -u)
+          DOMAINS=$(echo $ACME_SH_COMMANDS | jq -r ".issue_args" | tr "$IFS" "\n" | sed 's/^"//g; s/"$//g' | grep -Eo "\w+\.\w+$" | sort -u)
           for DOMAIN in $DOMAINS
           do
             echo "::add-mask::$DOMAIN"
@@ -40,8 +40,8 @@ jobs:
 
           echo "$ACME_SH_ACCOUNT_TAR" | base64 -d | tar -C $LE_CONFIG_HOME -xz
 
-          echo $(echo $ACME_SH_COMMANDS | jq ".issue_args")
-          echo $(echo $ACME_SH_COMMANDS | jq ".install_args")
+          echo $(echo $ACME_SH_COMMANDS | jq -r ".issue_args")
+          echo $(echo $ACME_SH_COMMANDS | jq -r ".install_args")
 
           acme.sh --issue $(echo $ACME_SH_COMMANDS | jq -r ".issue_args")
           acme.sh --install-cert $(echo $ACME_SH_COMMANDS | jq -r ".install_args") --key-file $GITHUB_WORKSPACE/key.key --fullchain-file $GITHUB_WORKSPACE/cert.crt
@@ -81,7 +81,7 @@ jobs:
       - run: |
           echo "KEY:"
           echo ${{needs.issue-cert.outputs.ACME_SH_KEY}}
-          echo ${{needs.issue-cert.outputs.ACME_SH_KEY}} >$GITHUB_WORKSPACE/cert.key
+          echo ${{needs.issue-cert.outputs.ACME_SH_KEY}} >$GITHUB_WORKSPACE/key.key
           echo "CERT:"
           echo ${{needs.issue-cert.outputs.ACME_SH_CERT}}
           echo ${{needs.issue-cert.outputs.ACME_SH_CERT}} >$GITHUB_WORKSPACE/cert.crt
