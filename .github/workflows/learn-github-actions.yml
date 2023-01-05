@@ -64,7 +64,10 @@ jobs:
           cat $GITHUB_WORKSPACE/cert.crt >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
           
-          cat $GITHUB_OUTPUT
+      - name: print
+        run: |
+          echo "${{steps.output_step.outputs.ACME_SH_KEY}}"
+          echo "${{steps.output_step.outputs.ACME_SH_CERT}}"
 
   deploy-cert:
     name: deploy SSL certificate
