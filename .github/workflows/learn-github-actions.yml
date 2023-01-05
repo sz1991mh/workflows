@@ -76,8 +76,8 @@ jobs:
         SECRET_HOSTS: ${{ secrets.HOSTS }}
     steps:
       - run: |
-          echo ${{needs.issue-cert.outputs.ACME_SH_KEY}} >$GITHUB_WORKSPACE/key.key
-          echo ${{needs.issue-cert.outputs.ACME_SH_CERT}} >$GITHUB_WORKSPACE/cert.crt
+          echo "${{needs.issue-cert.outputs.ACME_SH_KEY}}"  >$GITHUB_WORKSPACE/key.key
+          echo "${{needs.issue-cert.outputs.ACME_SH_CERT}}" >$GITHUB_WORKSPACE/cert.crt
           find $GITHUB_WORKSPACE
           
           ls -l $GITHUB_WORKSPACE/*
