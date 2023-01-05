@@ -29,8 +29,13 @@ jobs:
         NODE_ENV: development
         SECRET_HOSTS: ${{ secrets.HOSTS }}
 
+    outputs:
+      ACME_SH_KEY: ${{ steps.acme.outputs.ACME_SH_KEY }}
+      ACME_SH_CERT: ${{ steps.acme.outputs.ACME_SH_CERT }}
+
     steps:
       - name: acme.sh
+        id: acme
         run: |
           DOMAINS=$(echo $ACME_SH_COMMANDS | jq -r ".issue_args" | tr "$IFS" "\n" | sed 's/^"//g; s/"$//g' | grep -Eo "\w+\.\w+$" | sort -u)
           for DOMAIN in $DOMAINS
