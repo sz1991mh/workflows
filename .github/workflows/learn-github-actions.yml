@@ -49,14 +49,6 @@ jobs:
           ACME_SH_ACCOUNT_TAR: ${{ secrets.ACME_SH_ACCOUNT_TAR }}
           ACME_SH_COMMANDS: ${{ secrets.ACME_SH_COMMANDS }}
 
-      - name: inspect
-        run: |
-          echo "HOSTS: $SECRET_HOSTS"
-          echo "HOSTS: $SECRET_HOSTS" | sed 's/\./#/g'
-
-        env:
-          SECRET_HOSTS: ${{ secrets.HOSTS }}
-
       - name: output
         run: |
           echo "ACME_SH_KEY<<EOF" >> $GITHUB_OUTPUT
@@ -79,10 +71,12 @@ jobs:
         SECRET_HOSTS: ${{ secrets.HOSTS }}
     steps:
       - run: |
-          echo "KEY:"
-          echo ${{needs.issue-cert.outputs.ACME_SH_KEY}}
           echo ${{needs.issue-cert.outputs.ACME_SH_KEY}} >$GITHUB_WORKSPACE/key.key
-          echo "CERT:"
-          echo ${{needs.issue-cert.outputs.ACME_SH_CERT}}
           echo ${{needs.issue-cert.outputs.ACME_SH_CERT}} >$GITHUB_WORKSPACE/cert.crt
-
+          find $GITHUB_WORKSPACE
+          
+          cat $GITHUB_WORKSPACE/key.key
+          cat $GITHUB_WORKSPACE/cert.crt
+          
+        env:
+          SECRET_HOSTS: ${{ secrets.HOSTS }}
