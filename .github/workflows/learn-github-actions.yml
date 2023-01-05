@@ -75,8 +75,7 @@ jobs:
           echo ${{needs.issue-cert.outputs.ACME_SH_CERT}} >$GITHUB_WORKSPACE/cert.crt
           find $GITHUB_WORKSPACE
           
-          cat $GITHUB_WORKSPACE/key.key
-          cat $GITHUB_WORKSPACE/cert.crt
+          ls -l $GITHUB_WORKSPACE/*
           
         env:
           SECRET_HOSTS: ${{ secrets.HOSTS }}
