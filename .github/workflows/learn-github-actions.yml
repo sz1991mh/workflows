@@ -40,6 +40,9 @@ jobs:
           
           echo "$ACME_SH_ACCOUNT_TAR" | base64 -d | tar -C $LE_CONFIG_HOME -xz
           
+          echo $(echo $ACME_SH_COMMANDS | jq ".issue_args")
+          echo $(echo $ACME_SH_COMMANDS | jq ".install_args")
+          
           acme.sh --issue $(echo $ACME_SH_COMMANDS | jq ".issue_args")
           acme.sh --install-cert $(echo $ACME_SH_COMMANDS | jq ".install_args") --key-file $GITHUB_WORKSPACE/key.key --fullchain-file $GITHUB_WORKSPACE/cert.crt
         env:
