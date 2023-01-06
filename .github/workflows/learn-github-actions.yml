@@ -68,6 +68,8 @@ jobs:
         run: |
           echo "${{steps.output_step.outputs.ACME_SH_KEY}}"
           echo "${{steps.output_step.outputs.ACME_SH_CERT}}"
+          
+          echo "${{ toJSON(steps) }}"
 
   deploy-cert:
     name: deploy SSL certificate
