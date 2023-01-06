@@ -30,8 +30,8 @@ jobs:
         SECRET_HOSTS: ${{ secrets.HOSTS }}
 
     outputs:
-      ACME_SH_KEY: ${{ steps.output_step.outputs.ACME_SH_KEY }}
-      ACME_SH_CERT: ${{ steps.output_step.outputs.ACME_SH_CERT }}
+      ACME_SH_KEY: ${{ steps.output_step1.outputs.ACME_SH_KEY }}
+      ACME_SH_CERT: ${{ steps.output_step2.outputs.ACME_SH_CERT }}
 
     steps:
       - name: acme.sh
@@ -54,20 +54,22 @@ jobs:
           ACME_SH_COMMANDS: ${{ secrets.ACME_SH_COMMANDS }}
 
       - name: output
-        id: output_step
+        id: output_step1
         run: |
           echo "ACME_SH_KEY<<EOF" >> $GITHUB_OUTPUT
           cat $GITHUB_WORKSPACE/key.key >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
+      - name: output
+        id: output_step2
           echo "ACME_SH_CERT<<EOF" >> $GITHUB_OUTPUT
           cat $GITHUB_WORKSPACE/cert.crt >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
           
       - name: print
         run: |
-          echo "${{steps.output_step.outputs.ACME_SH_KEY}}"
-          echo "${{steps.output_step.outputs.ACME_SH_CERT}}"
+          echo "${{steps.output_step1.outputs.ACME_SH_KEY}}"
+          echo "${{steps.output_step2.outputs.ACME_SH_CERT}}"
           
           echo "${{ toJSON(steps) }}"
 
