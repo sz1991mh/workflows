@@ -87,5 +87,27 @@ jobs:
           
           echo "${{ toJSON(needs.issue-cert) }}"
           
+          apk update 
+          apk add openssh-client
+          mkdir -p $HOME/.ssh
+          
+          eval $(ssh-agent)
+          echo $SSH_KEY > $HOME/.ssh/SSH_KEY
+          ssh-add $HOME/.ssh/SSH_KEY
+          
+          for HOST in $SECRET_HOSTS
+          do
+            echo "::add-mask::$HOST"
+            ssh-keyscan -H -t ed25519 $HOST >> $HOME/.ssh/known_hosts
+          done
+          
+          for HOST in $SECRET_HOSTS
+          do
+            scp $GITHUB_WORKSPACE/key.key $GITHUB_WORKSPACE/cert.crt $SSH_USER@$HOST:~/
+            ssh $SSH_USER@$HOST "hostname; ls -l"
+          done
+          
         env:
           SECRET_HOSTS: ${{ secrets.HOSTS }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_USER: ${{ secrets.SSH_USER }}
