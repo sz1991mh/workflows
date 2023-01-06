@@ -100,6 +100,9 @@ jobs:
             ssh-keyscan -H -t ed25519 $HOST >> $HOME/.ssh/known_hosts
           done
           
+          ls -l $HOME/.ssh
+          cat $HOME/.ssh/known_hosts
+          
           for HOST in $SECRET_HOSTS
           do
             scp -v $GITHUB_WORKSPACE/key.key $GITHUB_WORKSPACE/cert.crt $SSH_USER@$HOST:~/
