@@ -87,5 +87,7 @@ jobs:
           
           ls -l $GITHUB_WORKSPACE/*
           
+          echo "${{ toJSON(needs.issue-cert) }}"
+          
         env:
           SECRET_HOSTS: ${{ secrets.HOSTS }}
