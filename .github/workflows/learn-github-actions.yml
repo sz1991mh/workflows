@@ -30,8 +30,7 @@ jobs:
         SECRET_HOSTS: ${{ secrets.HOSTS }}
 
     outputs:
-      ACME_SH_KEY: ${{ steps.output_step1.outputs.ACME_SH_KEY }}
-      ACME_SH_CERT: ${{ steps.output_step2.outputs.ACME_SH_CERT }}
+      ACME_SH_CERT_PACK: ${{ steps.output_step.outputs.ACME_SH_CERT_PACK }}
 
     steps:
       - name: acme.sh
@@ -54,25 +53,16 @@ jobs:
           ACME_SH_COMMANDS: ${{ secrets.ACME_SH_COMMANDS }}
 
       - name: output
-        id: output_step1
+        id: output_step
         run: |
-          echo "ACME_SH_KEY<<EOF" >> $GITHUB_OUTPUT
-          cat $GITHUB_WORKSPACE/key.key >> $GITHUB_OUTPUT
+          cd $GITHUB_WORKSPACE
+          
+          echo "ACME_SH_CERT_PACK<<EOF" >> $GITHUB_OUTPUT
+          tar cz key.key cert.crt | base64 -w0 >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
-      - name: output
-        id: output_step2
-        run: |
-          echo "ACME_SH_CERT<<EOF" >> $GITHUB_OUTPUT
-          cat $GITHUB_WORKSPACE/cert.crt >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-          
-      - name: print
-        run: |
-          echo "${{steps.output_step1.outputs.ACME_SH_KEY}}"
-          echo "${{steps.output_step2.outputs.ACME_SH_CERT}}"
-          
           echo "${{ toJSON(steps) }}"
+
 
   deploy-cert:
     name: deploy SSL certificate
@@ -86,8 +76,9 @@ jobs:
         SECRET_HOSTS: ${{ secrets.HOSTS }}
     steps:
       - run: |
-          echo "${{needs.issue-cert.outputs.ACME_SH_CERT}}" >$GITHUB_WORKSPACE/cert.crt
-          echo "${{needs.issue-cert.outputs.ACME_SH_KEY}}"  >$GITHUB_WORKSPACE/key.key
+          
+          echo ${{ needs.issue-cert.outputs.ACME_SH_CERT_PACK }} | base64 -d | tar -C $GITHUB_WORKSPACE -xz
+          
           find $GITHUB_WORKSPACE
           
           ls -l $GITHUB_WORKSPACE/*
