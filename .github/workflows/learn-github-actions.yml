@@ -105,8 +105,8 @@ jobs:
           
           for HOST in $SECRET_HOSTS
           do
-            scp -v $GITHUB_WORKSPACE/key.key $GITHUB_WORKSPACE/cert.crt $SSH_USER@$HOST:~/
-            ssh -v $SSH_USER@$HOST "hostname; ls -l"
+            scp -v -o UserKnownHostsFile=$HOME/.ssh/known_hosts $GITHUB_WORKSPACE/key.key $GITHUB_WORKSPACE/cert.crt $SSH_USER@$HOST:~/
+            ssh -v -o UserKnownHostsFile=$HOME/.ssh/known_hosts $SSH_USER@$HOST "hostname; ls -l"
           done
           
         env:
