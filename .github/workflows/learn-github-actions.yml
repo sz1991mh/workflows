@@ -87,10 +87,11 @@ jobs:
           apk add openssh-client
           
           mkdir -p $HOME/.ssh
-          echo $SSH_KEY > $HOME/.ssh/SSH_KEY
+          echo "$SSH_KEY" > $HOME/.ssh/SSH_KEY
           chmod 600 $HOME/.ssh/SSH_KEY
           
           ls -l $HOME/.ssh/SSH_KEY
+          apk info -v|grep ss[lh]
           
           eval $(ssh-agent)
           ssh-add $HOME/.ssh/SSH_KEY
