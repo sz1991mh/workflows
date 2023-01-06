@@ -58,12 +58,10 @@ jobs:
           cd $GITHUB_WORKSPACE
           
           # Bug for https://github.com/community/community/discussions/37942
-          # workaround by before set output
+          # workaround by encode before set output
           echo "ACME_SH_CERT_PACK<<EOF" >> $GITHUB_OUTPUT
           echo $(tar cz key.key cert.crt | base64 -w0) >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
-
-          echo "${{ toJSON(steps) }}"
 
 
   deploy-cert:
@@ -77,22 +75,21 @@ jobs:
         NODE_ENV: development
         SECRET_HOSTS: ${{ secrets.HOSTS }}
     steps:
-      - run: |
+      - name: deploy_hosts
+        run: |
           
           echo ${{ needs.issue-cert.outputs.ACME_SH_CERT_PACK }} | base64 -d | tar -C $GITHUB_WORKSPACE -xz
           
-          find $GITHUB_WORKSPACE
-          
           ls -l $GITHUB_WORKSPACE/*
-          
-          echo "${{ toJSON(needs.issue-cert) }}"
           
           apk update 
           apk add openssh-client
+          
           mkdir -p $HOME/.ssh
+          echo $SSH_KEY > $HOME/.ssh/SSH_KEY
+          chmod 600 $HOME/.ssh/SSH_KEY
           
           eval $(ssh-agent)
-          echo $SSH_KEY > $HOME/.ssh/SSH_KEY
           ssh-add $HOME/.ssh/SSH_KEY
           
           for HOST in $SECRET_HOSTS
@@ -111,3 +108,4 @@ jobs:
           SECRET_HOSTS: ${{ secrets.HOSTS }}
           SSH_KEY: ${{ secrets.SSH_KEY }}
           SSH_USER: ${{ secrets.SSH_USER }}
+
