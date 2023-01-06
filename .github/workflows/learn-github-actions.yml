@@ -62,6 +62,7 @@ jobs:
 
       - name: output
         id: output_step2
+        run: |
           echo "ACME_SH_CERT<<EOF" >> $GITHUB_OUTPUT
           cat $GITHUB_WORKSPACE/cert.crt >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
