@@ -90,7 +90,7 @@ jobs:
           echo $SSH_KEY > $HOME/.ssh/SSH_KEY
           chmod 600 $HOME/.ssh/SSH_KEY
           
-          cat $HOME/.ssh/SSH_KEY
+          ls -l $HOME/.ssh/SSH_KEY
           
           eval $(ssh-agent)
           ssh-add $HOME/.ssh/SSH_KEY
@@ -108,7 +108,8 @@ jobs:
           done
           
         env:
-          SECRET_HOSTS: ${{ secrets.HOSTS }}
           SSH_KEY: ${{ secrets.SSH_KEY }}
+          SECRET_HOSTS: ${{ secrets.HOSTS }}
           SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_COMMANDS: ${{ secrets.SSH_COMMANDS }}
 
