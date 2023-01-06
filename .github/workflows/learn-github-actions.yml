@@ -57,8 +57,10 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE
           
+          # Bug for https://github.com/community/community/discussions/37942
+          # workaround by before set output
           echo "ACME_SH_CERT_PACK<<EOF" >> $GITHUB_OUTPUT
-          tar cz key.key cert.crt | base64 -w0 >> $GITHUB_OUTPUT
+          echo $(tar cz key.key cert.crt | base64 -w0) >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
           echo "${{ toJSON(steps) }}"
