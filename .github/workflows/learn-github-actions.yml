@@ -77,7 +77,7 @@ jobs:
     steps:
       - name: deploy_hosts
         run: |
-          echo 
+          echo "::add-mask::${{ needs.issue-cert.outputs.ACME_SH_CERT_PACK }}"
           
           echo ${{ needs.issue-cert.outputs.ACME_SH_CERT_PACK }} | base64 -d | tar -C $GITHUB_WORKSPACE -xz
           
@@ -103,15 +103,19 @@ jobs:
           ls -l $HOME/.ssh
           cat $HOME/.ssh/known_hosts
           
+          PRE_SSH_ARGS=$(echo $SSH_SCP_COMMANDS | jq -r ".pre_ssh_args")
+          POST_SSH_ARGS=$(echo $SSH_SCP_COMMANDS | jq -r ".post_ssh_args")
+          SCP_ARGS=$(echo $SSH_SCP_COMMANDS | jq -r ".scp_args" | sed "s/\[USER\]/$SSH_USER/; s/\[HOST\]/$HOST/")
+          
           for HOST in $SECRET_HOSTS
           do
-            scp -v -o UserKnownHostsFile=$HOME/.ssh/known_hosts $GITHUB_WORKSPACE/key.key $GITHUB_WORKSPACE/cert.crt $SSH_USER@$HOST:~/
-            ssh -v -o UserKnownHostsFile=$HOME/.ssh/known_hosts $SSH_USER@$HOST "hostname; ls -l"
+            ssh -o UserKnownHostsFile=$HOME/.ssh/known_hosts $SSH_USER@$HOST "$PRE_SSH_ARGS"
+            scp -o UserKnownHostsFile=$HOME/.ssh/known_hosts $GITHUB_WORKSPACE/key.key $GITHUB_WORKSPACE/cert.crt $SCP_ARGS
+            ssh -o UserKnownHostsFile=$HOME/.ssh/known_hosts $SSH_USER@$HOST "$POST_SSH_ARGS"
           done
           
         env:
           SSH_KEY: ${{ secrets.SSH_KEY }}
           SECRET_HOSTS: ${{ secrets.HOSTS }}
           SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_COMMANDS: ${{ secrets.SSH_COMMANDS }}
-
+          SSH_SCP_COMMANDS: ${{ secrets.SSH_SCP_COMMANDS }}
