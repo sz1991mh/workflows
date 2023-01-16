@@ -105,12 +105,12 @@ jobs:
           
           PRE_SSH_ARGS=$(echo $SSH_SCP_COMMANDS | jq -r ".pre_ssh_args")
           POST_SSH_ARGS=$(echo $SSH_SCP_COMMANDS | jq -r ".post_ssh_args")
-          SCP_ARGS=$(echo $SSH_SCP_COMMANDS | jq -r ".scp_args" | sed "s/\[USER\]/$SSH_USER/; s/\[HOST\]/$HOST/")
+          SCP_ARGS=$(echo $SSH_SCP_COMMANDS | jq -r ".scp_args" ")
           
           for HOST in $SECRET_HOSTS
           do
             ssh -o UserKnownHostsFile=$HOME/.ssh/known_hosts $SSH_USER@$HOST "$PRE_SSH_ARGS"
-            scp -o UserKnownHostsFile=$HOME/.ssh/known_hosts $GITHUB_WORKSPACE/key.key $GITHUB_WORKSPACE/cert.crt $SCP_ARGS
+            scp -o UserKnownHostsFile=$HOME/.ssh/known_hosts $GITHUB_WORKSPACE/key.key $GITHUB_WORKSPACE/cert.crt $(echo $SCP_ARGS | sed "s/%USER@HOST%/$SSH_USER@$HOST/")
             ssh -o UserKnownHostsFile=$HOME/.ssh/known_hosts $SSH_USER@$HOST "$POST_SSH_ARGS"
           done
           
