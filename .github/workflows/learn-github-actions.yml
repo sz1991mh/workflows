@@ -105,7 +105,7 @@ jobs:
           
           PRE_SSH_ARGS=$(echo $SSH_SCP_COMMANDS | jq -r ".pre_ssh_args")
           POST_SSH_ARGS=$(echo $SSH_SCP_COMMANDS | jq -r ".post_ssh_args")
-          SCP_ARGS=$(echo $SSH_SCP_COMMANDS | jq -r ".scp_args" ")
+          SCP_ARGS=$(echo $SSH_SCP_COMMANDS | jq -r ".scp_args")
           
           echo $PRE_SSH_ARGS
           echo $POST_SSH_ARGS
