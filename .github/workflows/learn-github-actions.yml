@@ -109,9 +109,12 @@ jobs:
           
           for HOST in $SECRET_HOSTS
           do
-            ssh -o UserKnownHostsFile=$HOME/.ssh/known_hosts $SSH_USER@$HOST "$PRE_SSH_ARGS"
+            echo ssh -o UserKnownHostsFile=$HOME/.ssh/known_hosts $SSH_USER@$HOST $PRE_SSH_ARGS
+            ssh -o UserKnownHostsFile=$HOME/.ssh/known_hosts $SSH_USER@$HOST $PRE_SSH_ARGS
+            echo scp -o UserKnownHostsFile=$HOME/.ssh/known_hosts $GITHUB_WORKSPACE/key.key $GITHUB_WORKSPACE/cert.crt $(echo $SCP_ARGS | sed "s/%USER@HOST%/$SSH_USER@$HOST/")
             scp -o UserKnownHostsFile=$HOME/.ssh/known_hosts $GITHUB_WORKSPACE/key.key $GITHUB_WORKSPACE/cert.crt $(echo $SCP_ARGS | sed "s/%USER@HOST%/$SSH_USER@$HOST/")
-            ssh -o UserKnownHostsFile=$HOME/.ssh/known_hosts $SSH_USER@$HOST "$POST_SSH_ARGS"
+            echo ssh -o UserKnownHostsFile=$HOME/.ssh/known_hosts $SSH_USER@$HOST $POST_SSH_ARGS
+            ssh -o UserKnownHostsFile=$HOME/.ssh/known_hosts $SSH_USER@$HOST $POST_SSH_ARGS
           done
           
         env:
