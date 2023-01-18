@@ -77,7 +77,8 @@ jobs:
     steps:
       - name: deploy_hosts
         run: |
-        
+          
+          ACME_SH_CERT_PACK=${{ needs.issue-cert.outputs.ACME_SH_CERT_PACK }}
           echo "::add-mask::$ACME_SH_CERT_PACK"
           echo $ACME_SH_CERT_PACK | base64 -d | tar -C $GITHUB_WORKSPACE -xz
           
@@ -123,5 +124,4 @@ jobs:
           SECRET_HOSTS: ${{ secrets.HOSTS }}
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_SCP_COMMANDS: ${{ secrets.SSH_SCP_COMMANDS }}
-          ACME_SH_CERT_PACK: ${{ needs.issue-cert.outputs.ACME_SH_CERT_PACK }}
 
